@@ -1,6 +1,14 @@
 pipeline {
   agent any
+  environment {
+        SECRET = credentials('SECRET_GDRIVE_ACC')
+  }
   stages {
+    stage('setup') {
+      steps {
+          bash 'setup_dvc.sh $SECRET'
+      }
+    }
     stage('build') {
       steps {
           sh 'docker build -t tag -f Dockerfile .'
