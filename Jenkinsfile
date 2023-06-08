@@ -6,7 +6,7 @@ pipeline {
   stages {
     stage('setup') {
       steps {
-          sh 'setup_dvc.sh $SECRET'
+          sh './setup_dvc.sh $SECRET'
       }
     }
     stage('build') {
