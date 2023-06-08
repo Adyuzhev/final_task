@@ -10,10 +10,12 @@ def load_data(request):
     df = pd.read_csv(request.param)
     return df
 
+
 def test_model(load_data):
     y = load_data['Target']
     X = load_data.loc[:, load_data.columns != 'Target']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, stratify=y, test_size=0.2, random_state=42)
 
     preprocessor = preprocessing(X_train, y_train)
     test = preprocessor.transform(X_test)

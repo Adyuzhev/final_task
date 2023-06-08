@@ -17,7 +17,7 @@ y = X['Target']
 X.drop(columns=['Target'], inplace=True)
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, stratify=y, test_size=0.2, random_state = 42)
+    X, y, stratify=y, test_size=0.2, random_state=42)
 
 X_train.info()
 
@@ -29,6 +29,7 @@ for column_name in X_train.columns:
         cat_columns += [column_name]
     else:
         num_columns += [column_name]
+
 
 def preprocessing(X, y):
     cat_transformer = Pipeline(steps=[
@@ -46,18 +47,24 @@ def preprocessing(X, y):
 
     return preprocessor.fit(X, y)
 
+
 preprocessor = preprocessing(X_train, y_train)
 
 test = preprocessor.transform(X_test)
 train = preprocessor.transform(X_train)
 
-LR = LogisticRegression(
-    fit_intercept=True, random_state=42, solver='liblinear')
-LR.fit(train, y_train)
 
+def model_training(train, y_train):
+    LR = LogisticRegression(
+        fit_intercept=True, random_state=42, solver='liblinear')
+    LR.fit(train, y_train)
+    return LR
+
+
+LR = model_training(train, y_train)
 
 scores_train = cross_validate(LR, train, y_train, scoring='f1',
-                        cv=ShuffleSplit(n_splits=5, random_state=42))
+                              cv=ShuffleSplit(n_splits=5, random_state=42))
 
 score_test = f1_score(y_test, LR.predict(test))
 
@@ -66,5 +73,6 @@ result = st.button('Рассчитать Score')
 if result:
     DF_cv_linreg = pd.DataFrame(scores_train)
     st.write('Результаты кросс-валидации', '\n', DF_cv_linreg, '\n')
-    st.write('Среднее f1 на кросс-валидации -', round(DF_cv_linreg.mean()[2], 2))
+    st.write('Среднее f1 на кросс-валидации -',
+             round(DF_cv_linreg.mean()[2], 2))
     st.write('f1 на тестовых данных - ', round(score_test, 2))
