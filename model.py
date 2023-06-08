@@ -13,7 +13,7 @@ from sklearn.model_selection import cross_validate
 from sklearn.metrics import f1_score
 
 
-X = pd.read_csv('./final_task/data/titanic.csv')
+X = pd.read_csv('./data/titanic.csv')
 y = X['Target']
 X.drop(columns=['Target'], inplace=True)
 
@@ -31,21 +31,23 @@ for column_name in X_train.columns:
     else:
         num_columns += [column_name]
 
+def preprocessing(X, y):
+    cat_transformer = Pipeline(steps=[
+        ('imputer', SimpleImputer(strategy='most_frequent')),
+        ('encoder', TargetEncoder())])
 
-cat_transformer = Pipeline(steps=[
-    ('imputer', SimpleImputer(strategy='most_frequent')),
-    ('encoder', TargetEncoder())])
+    num_transformer = Pipeline(steps=[
+        ('imputer', SimpleImputer(strategy='mean')),
+        ('scaler', RobustScaler())])
 
-num_transformer = Pipeline(steps=[
-    ('imputer', SimpleImputer(strategy='mean')),
-    ('scaler', RobustScaler())])
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('num', num_transformer, num_columns),
+            ('cat', cat_transformer, cat_columns)])
 
-preprocessor = ColumnTransformer(
-    transformers=[
-        ('num', num_transformer, num_columns),
-        ('cat', cat_transformer, cat_columns)])
+    return preprocessor.fit(X, y)
 
-preprocessor.fit(X_train, y_train)
+preprocessor = preprocessing(X_train, y_train)
 
 test = preprocessor.transform(X_test)
 train = preprocessor.transform(X_train)
