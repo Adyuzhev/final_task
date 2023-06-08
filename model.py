@@ -1,6 +1,5 @@
 import pandas as pd
 import streamlit as st
-import pickle
 from category_encoders import TargetEncoder
 from sklearn.linear_model import LogisticRegression
 from sklearn.compose import ColumnTransformer
@@ -56,16 +55,11 @@ LR = LogisticRegression(
     fit_intercept=True, random_state=42, solver='liblinear')
 LR.fit(train, y_train)
 
-with open("model.pkl", 'wb') as file:
-    pickle.dump(LR, file)
 
-with open('model.pkl', 'rb') as file:
-    pickle_model = pickle.load(file)
-
-scores_train = cross_validate(pickle_model, train, y_train, scoring='f1',
+scores_train = cross_validate(LR, train, y_train, scoring='f1',
                         cv=ShuffleSplit(n_splits=5, random_state=42))
 
-score_test = f1_score(y_test, pickle_model.predict(test))
+score_test = f1_score(y_test, LR.predict(test))
 
 st.title('Результаты работы модели')
 result = st.button('Рассчитать Score')

@@ -1,5 +1,5 @@
 pandas
 scikit-learn
 streamlit
-pickle
 category_encoders
+pytest
