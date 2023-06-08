@@ -8,7 +8,7 @@ pipeline {
     }
     stage('run') {
       steps {
-          sh 'docker run tag'
+          sh 'docker run -p 8501:8501 tag'
       }
     }
   }
