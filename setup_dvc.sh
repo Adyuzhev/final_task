@@ -1,6 +1,6 @@
 #!/bin/bash
 pip install dvc
-PATH=$PATH:~/local/bin
+PATH=$PATH:~/.local/bin
 echo $PATH
 dvc init
 dvc remote add --default drive "gdrive://1wwnGLj2QkFiikQeoNsX5tZ5KVTMaLx0D"
