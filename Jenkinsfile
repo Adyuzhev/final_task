@@ -6,7 +6,6 @@ pipeline {
   stages {
     stage('setup') {
       steps {
-          sh 'echo $PATH'
           sh 'chmod 755 "./setup_dvc.sh"'
           sh './setup_dvc.sh $SECRET'
 
